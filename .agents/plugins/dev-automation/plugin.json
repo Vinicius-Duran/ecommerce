@@ -1,0 +1,5 @@
+{
+  "name": "dev-automation",
+  "description": "Integração automática com GitHub, Vercel e Supabase",
+  "version": "1.0.0"
+}
