@@ -2,21 +2,27 @@
 
 import { useCartStore } from '@/store/cartStore'
 import { ShoppingBag, X } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Cart() {
-  const { items, getTotal, removeItem, checkoutWhatsApp } = useCartStore()
-  const [isOpen, setIsOpen] = useState(false)
+  const { items, getTotal, removeItem, checkoutWhatsApp, isOpen, openCart, closeCart } = useCartStore()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null; // Previne erro de hydration
 
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0)
 
   // O número do WhatsApp para receber os pedidos
-  const WPP_NUMBER = '5511999999999'
+  const WPP_NUMBER = '5548996113087'
 
   return (
     <>
       <button 
-        onClick={() => setIsOpen(true)}
+        onClick={openCart}
         className="fixed bottom-6 right-6 bg-pink-600 text-white p-4 rounded-full shadow-lg hover:bg-pink-700 transition-colors flex items-center gap-2 z-40"
       >
         <ShoppingBag size={24} />
@@ -34,7 +40,7 @@ export default function Cart() {
               <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
                 <ShoppingBag /> Seu Carrinho
               </h2>
-              <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-800">
+              <button onClick={closeCart} className="text-gray-500 hover:text-gray-800">
                 <X size={24} />
               </button>
             </div>
@@ -84,3 +90,4 @@ export default function Cart() {
     </>
   )
 }
+

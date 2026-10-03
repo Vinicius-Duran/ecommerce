@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase'
-import { addProduct, deleteProduct } from '@/app/actions'
+import { addProduct } from '@/app/actions'
+import AdminProductRow from './AdminProductRow'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,7 +42,7 @@ export default async function AdminPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Imagem (Upload)</label>
-              <input name="image" type="file" accept="image/*" className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-pink-500" />
+              <input name="image" type="file" accept="image/*" required className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-pink-500" />
             </div>
 
             <div className="md:col-span-2 space-y-2">
@@ -50,7 +51,7 @@ export default async function AdminPage() {
             </div>
 
             <button type="submit" className="md:col-span-2 bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition-colors">
-              Salvar Produto
+              Salvar Novo Produto
             </button>
           </form>
         </section>
@@ -62,34 +63,23 @@ export default async function AdminPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b text-sm text-gray-500">
-                  <th className="pb-3">Imagem</th>
-                  <th className="pb-3">Nome</th>
-                  <th className="pb-3">Preço</th>
-                  <th className="pb-3 text-right">Ação</th>
+                  <th className="pb-3 px-2">Imagem</th>
+                  <th className="pb-3 px-2">Nome</th>
+                  <th className="pb-3 px-2">Preço</th>
+                  <th className="pb-3 px-2 text-right">Ação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {products?.map(product => (
-                  <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="py-3">
-                      {product.image_url ? (
-                        <img src={product.image_url} alt="" className="w-12 h-12 object-cover rounded-md" />
-                      ) : (
-                        <div className="w-12 h-12 bg-gray-100 rounded-md"></div>
-                      )}
-                    </td>
-                    <td className="py-3 font-medium">{product.name}</td>
-                    <td className="py-3 text-gray-600">R$ {product.price.toFixed(2)}</td>
-                    <td className="py-3 text-right">
-                      <form action={async () => {
-                        'use server'
-                        await deleteProduct(product.id)
-                      }}>
-                        <button className="text-red-500 hover:text-red-700 font-medium text-sm">Excluir</button>
-                      </form>
+                  <AdminProductRow key={product.id} product={product} />
+                ))}
+                {(!products || products.length === 0) && (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-gray-500">
+                      Nenhum produto cadastrado ainda.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -99,3 +89,4 @@ export default async function AdminPage() {
     </div>
   )
 }
+
